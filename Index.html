@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadoras</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            background: linear-gradient(135deg, #1e3c72, #2a5298); 
+            color: white; 
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            flex-direction: column;
+        }
+        .calculator { 
+            width: 350px; 
+            padding: 20px; 
+            background: rgba(0, 0, 0, 0.8); 
+            border-radius: 15px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+            transition: transform 0.3s ease-in-out;
+            margin: 20px;
+        }
+        .calculator:hover {
+            transform: scale(1.05);
+        }
+        input, select, button { 
+            margin: 10px 0; 
+            padding: 10px; 
+            width: 90%; 
+            border-radius: 5px; 
+            border: none;
+            font-size: 16px;
+        }
+        button {
+            background: #ff9800;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #e68900;
+        }
+        p { 
+            margin-top: 15px;
+            font-size: 18px;
+        }
+        .stars {
+            margin-top: 10px;
+            font-size: 24px;
+            color: gold;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadoras</h1>
+    
+    <!-- Calculadora Científica -->
+    <div class="calculator">
+        <h2>Calculadora Científica</h2>
+        <input type="number" id="num1" placeholder="Ingrese un número">
+        <input type="number" id="num2" placeholder="Ingrese otro número (opcional)">
+        <select id="operation">
+            <option value="+">Suma</option>
+            <option value="-">Resta</option>
+            <option value="*">Multiplicación</option>
+            <option value="/">División</option>
+            <option value="**">Exponente</option>
+        </select>
+        <button onclick="calculateScientific()">=</button>
+        <p id="resultScientific"></p>
+    </div>
+    
+    <!-- Calculadora para Niños -->
+    <div class="calculator">
+        <h2>🧮 Calculadora para Niños</h2>
+        <input type="number" id="num1Child" placeholder="Número 1">
+        <select id="operator">
+            <option value="+">➕</option>
+            <option value="-">➖</option>
+            <option value="*">✖</option>
+            <option value="/">➗</option>
+        </select>
+        <input type="number" id="num2Child" placeholder="Número 2">
+        <button onclick="calculateChild()">Calcular</button>
+        <div class="result" id="resultChild"></div>
+        <div class="stars" id="stars"></div>
+    </div>
+    
+    <script>
+        // Calculadora Científica
+        function calculateScientific() {
+            let num1 = document.getElementById("num1").value;
+            let num2 = document.getElementById("num2").value;
+            let operation = document.getElementById("operation").value;
+            let result = document.getElementById("resultScientific");
+            
+            if (num1 !== "" && num2 !== "") {
+                num1 = parseFloat(num1);
+                num2 = parseFloat(num2);
+                result.innerText = "Resultado: " + eval(num1 + operation + num2);
+            } else if (num1 !== "") {
+                num1 = parseFloat(num1);
+                let square = num1 ** 2;
+                let cubic = num1 ** 3;
+                let cuart = num1 ** 4;
+                let sqrt = Math.sqrt(num1).toFixed(3);
+                let binary = num1.toString(2);
+                result.innerHTML = `Exponente: ${square}<br>Exponente Cubica: ${cubic}<br>Exponente a la Cuarta: ${cuart}<br>Raíz: ${sqrt}<br>Binario: ${binary}`;
+            } else {
+                result.innerText = "Ingrese al menos un número.";
+            }
+        }
+
+        // Calculadora para Niños
+        function calculateChild() {
+            let num1 = parseFloat(document.getElementById("num1Child").value);
+            let num2 = parseFloat(document.getElementById("num2Child").value);
+            let operator = document.getElementById("operator").value;
+            let result;
+            
+            if (isNaN(num1) || isNaN(num2)) {
+                alert("Por favor ingresa números válidos.");
+                return;
+            }
+            
+            switch(operator) {
+                case "+": result = num1 + num2; break;
+                case "-": result = num1 - num2; break;
+                case "*": result = num1 * num2; break;
+                case "/": result = num2 !== 0 ? num1 / num2 : "Error"; break;
+                default: result = "Error";
+            }
+            
+            document.getElementById("resultChild").innerText = `Resultado: ${result}`;
+            let starsContainer = document.getElementById("stars");
+            starsContainer.innerHTML = "";
+            
+            if (result <= 50 && result >= 0) {
+                for (let i = 0; i < result; i++) {
+                    let star = document.createElement("span");
+                    star.innerHTML = "⭐";
+                    starsContainer.appendChild(star);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
