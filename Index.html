@@ -10,13 +10,13 @@
             padding: 0;
             background-color: #000;
             overflow: hidden;
-            font-family: 'Arial', sans-serif;
-            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
         }
 
         .game-container {
@@ -37,13 +37,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.8);
             padding: 20px;
             border-radius: 10px;
             text-align: center;
             display: none;
+            color: white;
             z-index: 10;
-            width: 60%;
             border: 2px solid #00f8ff;
             box-shadow: 0 0 20px #00f8ff;
         }
@@ -95,8 +95,8 @@
         const HEIGHT = canvas.height;
         const GAME_SPEED = 80;
 
-        let isGameRunning = false;
         let gameInterval;
+        let isGameRunning = false;
         let grid = [];
 
         const player1 = {
@@ -120,38 +120,26 @@
         };
 
         function initGrid() {
-            grid = Array(WIDTH / GRID_SIZE)
-                .fill(null)
-                .map(() => Array(HEIGHT / GRID_SIZE).fill(0));
-        }
-
-        function drawRoundedRect(x, y, width, height, radius, color) {
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + width - radius, y);
-            ctx.arcTo(x + width, y, x + width, y + radius, radius);
-            ctx.lineTo(x + width, y + height - radius);
-            ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
-            ctx.lineTo(x + radius, y + height);
-            ctx.arcTo(x, y + height, x, y + height - radius, radius);
-            ctx.lineTo(x, y + radius);
-            ctx.arcTo(x, y, x + radius, y, radius);
-            ctx.fill();
+            grid = Array.from({ length: WIDTH / GRID_SIZE }, () =>
+                Array(HEIGHT / GRID_SIZE).fill(0)
+            );
         }
 
         function drawPlayer(player) {
             player.trail.forEach(pos => {
-                drawRoundedRect(pos.x, pos.y, GRID_SIZE, GRID_SIZE, 2, player.color);
+                ctx.fillStyle = player.color;
+                ctx.fillRect(pos.x, pos.y, GRID_SIZE, GRID_SIZE);
             });
 
-            drawRoundedRect(player.x, player.y, GRID_SIZE, GRID_SIZE, 3, player.color);
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, GRID_SIZE, GRID_SIZE);
         }
 
         function checkCollision(player) {
             const gridX = Math.floor(player.x / GRID_SIZE);
             const gridY = Math.floor(player.y / GRID_SIZE);
 
+            // Verifica si el jugador choca con el borde o con el rastro
             if (
                 gridX < 0 || gridX >= WIDTH / GRID_SIZE ||
                 gridY < 0 || gridY >= HEIGHT / GRID_SIZE ||
@@ -165,8 +153,10 @@
         }
 
         function update() {
+            // Movimiento de los jugadores
             player1.x += player1.dx;
             player1.y += player1.dy;
+
             player2.x += player2.dx;
             player2.y += player2.dy;
 
@@ -208,39 +198,54 @@
 
             gameOverDiv.style.display = 'none';
             initGrid();
-            
-            player1.trail = [];
-            player2.trail = [];
 
+            // Posiciones iniciales
             player1.x = WIDTH * 0.25;
             player1.y = HEIGHT / 2;
             player1.dx = GRID_SIZE;
             player1.dy = 0;
+            player1.trail = [];
 
             player2.x = WIDTH * 0.75;
             player2.y = HEIGHT / 2;
             player2.dx = -GRID_SIZE;
             player2.dy = 0;
+            player2.trail = [];
 
             isGameRunning = true;
             gameInterval = setInterval(gameLoop, GAME_SPEED);
         }
 
+        // Controles
         window.addEventListener('keydown', (e) => {
-            if (e.code === player1.controls.up && player1.dy === 0) {
-                player1.dx = 0;
-                player1.dy = -GRID_SIZE;
-            } else if (e.code === player1.controls.down && player1.dy === 0) {
-                player1.dx = 0;
-                player1.dy = GRID_SIZE;
-            }
+            if (isGameRunning) {
+                if (e.code === player1.controls.up && player1.dy === 0) {
+                    player1.dx = 0;
+                    player1.dy = -GRID_SIZE;
+                } else if (e.code === player1.controls.down && player1.dy === 0) {
+                    player1.dx = 0;
+                    player1.dy = GRID_SIZE;
+                } else if (e.code === player1.controls.left && player1.dx === 0) {
+                    player1.dx = -GRID_SIZE;
+                    player1.dy = 0;
+                } else if (e.code === player1.controls.right && player1.dx === 0) {
+                    player1.dx = GRID_SIZE;
+                    player1.dy = 0;
+                }
 
-            if (e.code === player2.controls.up && player2.dy === 0) {
-                player2.dx = 0;
-                player2.dy = -GRID_SIZE;
-            } else if (e.code === player2.controls.down && player2.dy === 0) {
-                player2.dx = 0;
-                player2.dy = GRID_SIZE;
+                if (e.code === player2.controls.up && player2.dy === 0) {
+                    player2.dx = 0;
+                    player2.dy = -GRID_SIZE;
+                } else if (e.code === player2.controls.down && player2.dy === 0) {
+                    player2.dx = 0;
+                    player2.dy = GRID_SIZE;
+                } else if (e.code === player2.controls.left && player2.dx === 0) {
+                    player2.dx = -GRID_SIZE;
+                    player2.dy = 0;
+                } else if (e.code === player2.controls.right && player2.dx === 0) {
+                    player2.dx = GRID_SIZE;
+                    player2.dy = 0;
+                }
             }
         });
 
