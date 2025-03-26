@@ -3,156 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadoras</title>
+    <title>TRONEIPTPL</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            background: linear-gradient(135deg, #1e3c72, #2a5298); 
-            color: white; 
-            height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            flex-direction: column;
-        }
-        .calculator { 
-            width: 350px; 
-            padding: 20px; 
-            background: rgba(0, 0, 0, 0.8); 
-            border-radius: 15px; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
-            transition: transform 0.3s ease-in-out;
-            margin: 20px;
-        }
-        .calculator:hover {
-            transform: scale(1.05);
-        }
-        input, select, button { 
-            margin: 10px 0; 
-            padding: 10px; 
-            width: 90%; 
-            border-radius: 5px; 
-            border: none;
-            font-size: 16px;
-        }
-        button {
-            background: #ff9800;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
             color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background: #e68900;
-        }
-        p { 
-            margin-top: 15px;
-            font-size: 18px;
-        }
-        .stars {
-            margin-top: 10px;
-            font-size: 24px;
-            color: gold;
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            gap: 5px;
+            height: 100vh;
+        }
+
+        .game-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 2px solid #00f8ff;
+            box-shadow: 0 0 20px #00f8ff, inset 0 0 10px #00f8ff;
+        }
+
+        canvas {
+            display: block;
+            background-color: #000;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            z-index: 10;
+            width: 60%;
+            border: 2px solid #00f8ff;
+            box-shadow: 0 0 20px #00f8ff;
+        }
+
+        button {
+            background-color: #111;
+            color: white;
+            border: 2px solid #00f8ff;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #00f8ff;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            box-shadow: 0 0 20px #00f8ff;
         }
     </style>
 </head>
 <body>
-    <h1>Calculadoras</h1>
-    
-    <!-- Calculadora Científica -->
-    <div class="calculator">
-        <h2>Calculadora Científica</h2>
-        <input type="number" id="num1" placeholder="Ingrese un número">
-        <input type="number" id="num2" placeholder="Ingrese otro número (opcional)">
-        <select id="operation">
-            <option value="+">Suma</option>
-            <option value="-">Resta</option>
-            <option value="*">Multiplicación</option>
-            <option value="/">División</option>
-            <option value="**">Exponente</option>
-        </select>
-        <button onclick="calculateScientific()">=</button>
-        <p id="resultScientific"></p>
+
+<h1>TRONEIPTPL</h1>
+
+<div class="game-container">
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div class="game-over" id="gameOver">
+        <h2>¡FIN DEL JUEGO!</h2>
+        <div id="winner"></div>
+        <button id="restartBtn">Reiniciar Juego</button>
     </div>
-    
-    <!-- Calculadora para Niños -->
-    <div class="calculator">
-        <h2>🧮 Calculadora para Niños</h2>
-        <input type="number" id="num1Child" placeholder="Número 1">
-        <select id="operator">
-            <option value="+">➕</option>
-            <option value="-">➖</option>
-            <option value="*">✖</option>
-            <option value="/">➗</option>
-        </select>
-        <input type="number" id="num2Child" placeholder="Número 2">
-        <button onclick="calculateChild()">Calcular</button>
-        <div class="result" id="resultChild"></div>
-        <div class="stars" id="stars"></div>
-    </div>
-    
-    <script>
-        // Calculadora Científica
-        function calculateScientific() {
-            let num1 = document.getElementById("num1").value;
-            let num2 = document.getElementById("num2").value;
-            let operation = document.getElementById("operation").value;
-            let result = document.getElementById("resultScientific");
-            
-            if (num1 !== "" && num2 !== "") {
-                num1 = parseFloat(num1);
-                num2 = parseFloat(num2);
-                result.innerText = "Resultado: " + eval(num1 + operation + num2);
-            } else if (num1 !== "") {
-                num1 = parseFloat(num1);
-                let square = num1 ** 2;
-                let cubic = num1 ** 3;
-                let cuart = num1 ** 4;
-                let sqrt = Math.sqrt(num1).toFixed(3);
-                let binary = num1.toString(2);
-                result.innerHTML = `Exponente: ${square}<br>Exponente Cubica: ${cubic}<br>Exponente a la Cuarta: ${cuart}<br>Raíz: ${sqrt}<br>Binario: ${binary}`;
-            } else {
-                result.innerText = "Ingrese al menos un número.";
+</div>
+
+<button id="startBtn">Iniciar Juego</button>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gameOverDiv = document.getElementById('gameOver');
+        const winnerDiv = document.getElementById('winner');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+
+        const GRID_SIZE = 10;
+        const WIDTH = canvas.width;
+        const HEIGHT = canvas.height;
+        const GAME_SPEED = 80;
+
+        let isGameRunning = false;
+        let gameInterval;
+        let grid = [];
+
+        const player1 = {
+            x: WIDTH * 0.25,
+            y: HEIGHT / 2,
+            dx: GRID_SIZE,
+            dy: 0,
+            color: '#ff00ff',
+            trail: [],
+            controls: { up: 'KeyW', down: 'KeyS', left: 'KeyA', right: 'KeyD' }
+        };
+
+        const player2 = {
+            x: WIDTH * 0.75,
+            y: HEIGHT / 2,
+            dx: -GRID_SIZE,
+            dy: 0,
+            color: '#00ffff',
+            trail: [],
+            controls: { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }
+        };
+
+        function initGrid() {
+            grid = Array(WIDTH / GRID_SIZE)
+                .fill(null)
+                .map(() => Array(HEIGHT / GRID_SIZE).fill(0));
+        }
+
+        function drawRoundedRect(x, y, width, height, radius, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.arcTo(x + width, y, x + width, y + radius, radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+            ctx.lineTo(x + radius, y + height);
+            ctx.arcTo(x, y + height, x, y + height - radius, radius);
+            ctx.lineTo(x, y + radius);
+            ctx.arcTo(x, y, x + radius, y, radius);
+            ctx.fill();
+        }
+
+        function drawPlayer(player) {
+            player.trail.forEach(pos => {
+                drawRoundedRect(pos.x, pos.y, GRID_SIZE, GRID_SIZE, 2, player.color);
+            });
+
+            drawRoundedRect(player.x, player.y, GRID_SIZE, GRID_SIZE, 3, player.color);
+        }
+
+        function checkCollision(player) {
+            const gridX = Math.floor(player.x / GRID_SIZE);
+            const gridY = Math.floor(player.y / GRID_SIZE);
+
+            if (
+                gridX < 0 || gridX >= WIDTH / GRID_SIZE ||
+                gridY < 0 || gridY >= HEIGHT / GRID_SIZE ||
+                grid[gridX][gridY] === 1
+            ) {
+                return true;
+            }
+
+            grid[gridX][gridY] = 1;
+            return false;
+        }
+
+        function update() {
+            player1.x += player1.dx;
+            player1.y += player1.dy;
+            player2.x += player2.dx;
+            player2.y += player2.dy;
+
+            player1.trail.push({ x: player1.x, y: player1.y });
+            player2.trail.push({ x: player2.x, y: player2.y });
+
+            if (checkCollision(player1) && checkCollision(player2)) {
+                endGame('¡Empate!');
+            } else if (checkCollision(player1)) {
+                endGame('¡Jugador 2 Gana!');
+            } else if (checkCollision(player2)) {
+                endGame('¡Jugador 1 Gana!');
             }
         }
 
-        // Calculadora para Niños
-        function calculateChild() {
-            let num1 = parseFloat(document.getElementById("num1Child").value);
-            let num2 = parseFloat(document.getElementById("num2Child").value);
-            let operator = document.getElementById("operator").value;
-            let result;
-            
-            if (isNaN(num1) || isNaN(num2)) {
-                alert("Por favor ingresa números válidos.");
-                return;
-            }
-            
-            switch(operator) {
-                case "+": result = num1 + num2; break;
-                case "-": result = num1 - num2; break;
-                case "*": result = num1 * num2; break;
-                case "/": result = num2 !== 0 ? num1 / num2 : "Error"; break;
-                default: result = "Error";
-            }
-            
-            document.getElementById("resultChild").innerText = `Resultado: ${result}`;
-            let starsContainer = document.getElementById("stars");
-            starsContainer.innerHTML = "";
-            
-            if (result <= 50 && result >= 0) {
-                for (let i = 0; i < result; i++) {
-                    let star = document.createElement("span");
-                    star.innerHTML = "⭐";
-                    starsContainer.appendChild(star);
-                }
-            }
+        function draw() {
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
+            drawPlayer(player1);
+            drawPlayer(player2);
         }
-    </script>
+
+        function gameLoop() {
+            update();
+            draw();
+        }
+
+        function endGame(message) {
+            clearInterval(gameInterval);
+            isGameRunning = false;
+            winnerDiv.innerHTML = message;
+            gameOverDiv.style.display = 'block';
+        }
+
+        function startGame() {
+            if (isGameRunning) return;
+
+            gameOverDiv.style.display = 'none';
+            initGrid();
+            player1.trail = [];
+            player2.trail = [];
+
+            player1.x = WIDTH * 0.25;
+            player1.y = HEIGHT / 2;
+            player2.x = WIDTH * 0.75;
+            player2.y = HEIGHT / 2;
+
+            isGameRunning = true;
+            gameInterval = setInterval(gameLoop, GAME_SPEED);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === player1.controls.up && player1.dy === 0) {
+                player1.dx = 0;
+                player1.dy = -GRID_SIZE;
+            } else if (e.code === player1.controls.down && player1.dy === 0) {
+                player1.dx = 0;
+                player1.dy = GRID_SIZE;
+            }
+
+            if (e.code === player2.controls.up && player2.dy === 0) {
+                player2.dx = 0;
+                player2.dy = -GRID_SIZE;
+            } else if (e.code === player2.controls.down && player2.dy === 0) {
+                player2.dx = 0;
+                player2.dy = GRID_SIZE;
+            }
+        });
+
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+    });
+</script>
+
 </body>
 </html>
