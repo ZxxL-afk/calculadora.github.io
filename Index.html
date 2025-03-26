@@ -173,11 +173,14 @@
             player1.trail.push({ x: player1.x, y: player1.y });
             player2.trail.push({ x: player2.x, y: player2.y });
 
-            if (checkCollision(player1) && checkCollision(player2)) {
+            const p1Collision = checkCollision(player1);
+            const p2Collision = checkCollision(player2);
+
+            if (p1Collision && p2Collision) {
                 endGame('¡Empate!');
-            } else if (checkCollision(player1)) {
+            } else if (p1Collision) {
                 endGame('¡Jugador 2 Gana!');
-            } else if (checkCollision(player2)) {
+            } else if (p2Collision) {
                 endGame('¡Jugador 1 Gana!');
             }
         }
@@ -196,7 +199,7 @@
         function endGame(message) {
             clearInterval(gameInterval);
             isGameRunning = false;
-            winnerDiv.innerHTML = message;
+            winnerDiv.textContent = message;
             gameOverDiv.style.display = 'block';
         }
 
@@ -205,13 +208,19 @@
 
             gameOverDiv.style.display = 'none';
             initGrid();
+            
             player1.trail = [];
             player2.trail = [];
 
             player1.x = WIDTH * 0.25;
             player1.y = HEIGHT / 2;
+            player1.dx = GRID_SIZE;
+            player1.dy = 0;
+
             player2.x = WIDTH * 0.75;
             player2.y = HEIGHT / 2;
+            player2.dx = -GRID_SIZE;
+            player2.dy = 0;
 
             isGameRunning = true;
             gameInterval = setInterval(gameLoop, GAME_SPEED);
